@@ -46,7 +46,7 @@ The scanner is configured to scan anything deployed on the synopsys-demo workspa
 
 # Advanced setup (Scan a custom app)
 
-> :warning: **PLEASE DON”T SCAN HUGE PROJECTS, THIS BD INSTANCE IS UNDER AN NFR AND HAS LIMITED CAPACITY**
+> :warning: **PLEASE DON'T SCAN HUGE PROJECTS, THIS BLACK DUCK INSTANCE IS UNDER AN NFR LICENSE AND HAS LIMITED CAPACITY**
 
 The objective is to deploy an application of your choice in the synopsys-demo namespace so that the Black Duck connector can scan it. In the steps below we'll be using the <https://quay.io/repository/opssighttestorg/ducky-crm> image.
 
