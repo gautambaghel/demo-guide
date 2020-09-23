@@ -1,20 +1,22 @@
-This workshop is for scanning containers deployed on OpenShift with Black Duck targeted at individuals to be aware about running opensource in their production workloads. The workshop involves deploying the openshift integration and understanding how it works and interacts with an applicaiton deployed in OpenShift. The workshop works as following:
+This workshop showcases scanning containers deployed on Red Hat OpenShift with Synopsys Black Duck Software Composition Analysis (SCA) in production workloads. Black Duck provides a solution for managing security, quality, and license compliance risk that comes from the use of open source and third-party code in applications and containers.
 
-1. Cluster & Namespace setup
-2. Namespace & running pods verification
-3. Demo Application details
-4. How the scaning works
-5. Advanced setup
+This workshop provides a fully deployed and running Black Duck integration and will cover the following topics:
 
-# Cluster & Namespace setup
+1. How Black Duck for OpenShift is deployed and setup.
+2. An overview of the demo Insecure Bank application.
+3. How Black Duck Scanning works.
+4. An overview of Black Duck Scanning results.
+5. Scanning a custom container.
 
-A lab instructor is required to run this workshop, after the instructor deploys the ansible playbook it will create an openshift cluster with two name space created, more info on them is provided in the next section. The lab instructor upon successfull deployment will give participants access to the cluster.
+# Cluster & Project setup
+
+A lab instructor is required to run this as a workshop. After the instructor deploys the RHPDS instance, it will create a Red Hat OpenShift cluster with two projects created, and Synopsys Black Duck for OpenShift deployed. The lab instructor will provide participants access to the cluster.
 
 ![The two created namespaces](images/synopsys-namespaces.png)
 
-# Namespace & running pod verification
+# Project & running pod verification
 
-The two created namespace are as follows - synopsys-blackduck & synopsys-demo. The synopsys-blackduck namespace contains 4 pods namely:
+The two created projects are as follows - synopsys-blackduck & synopsys-demo. The synopsys-blackduck project contains 4 pods:
 
 1. opssight-core: brains of the operation, a pod which communicates with Black Duck instance hosted at <https://redhathub.blackducksoftware.com/>, it maintains a list of all the scanned images and communicates with the rest of the pods.
 
@@ -26,9 +28,9 @@ The two created namespace are as follows - synopsys-blackduck & synopsys-demo. T
 
 ![Running pods in synopsys-blackduck namespace](images/blackduck-connector-pods.png)
 
-This also includes a configmap for configuring a lot of options e.g. when to look for scans to run, only run scans for specific namespace etc. There are 2 also 2 opaque secrets created which helps the integration with if any images that maybe coming from a private registry and which Black Duck instance to connect to. All of these options are preconfigured so workshop users need not worry about them.
+This also includes a configmap for configuring a lot of options e.g. when to look for scans to run, only run scans for specific project etc. There are 2 also 2 opaque secrets created which helps the integration with if any images that maybe coming from a private registry and which Black Duck instance to connect to. All of these options are preconfigured so workshop users need not worry about them.
 
-The second namespace (synopsys-demo) is created to showcase a demo application and it should contain one pod. To access this application please see the routes created for the synopsys-demo namespace. Please visit the external URL though the created route to make sure it's up and running. The username and password should be "john@example.com" and "test" respectively.
+The second project (synopsys-demo) is created to showcase a demo application and it should contain one pod. To access this application please see the routes created for the synopsys-demo project. Please visit the external URL though the created route to make sure it's up and running. The username and password should be "john@example.com" and "test" respectively.
 
 # Demo Application details
 
@@ -38,7 +40,7 @@ The demo application is an insecure bank application where after logging in user
 
 # How the scanning works
 
-The scanner is configured to scan anything deployed on the synopsys-demo workspace. As soon as the insecure-bank application pod starts running the pod-processor is informed of that activity and the underlying image information is sent to the core peice which intiates the scaning process. The core pod sends the information to scanner pod which has 2 containers, the first one to download and temporarily store the image in memory and the other one to invoke the Black Duck scanner which creates the project (if not present) and scan. After the scanning is finished and Black Duck populates the Bill Of Materials (BOM) in Black Duck, the core pod retrieves the information and sends it to the pod processor to annotate the pods with policy violation and vulnerability count. To view these labels simply view the pods in the OpenShift UI and it should look something like "com.blackducksoftware.pod.overall-status=NOT_IN_VIOLATION".
+For purposes of this workshop, the Black Duck scanner is configured to scan anything deployed in the synopsys-demo workspace. As soon as the insecure-bank application pod starts running the pod-processor is informed of that activity and the underlying image information is sent to the core peice which intiates the scaning process. The core pod sends the information to scanner pod which has 2 containers, the first one to download and temporarily store the image in memory and the other one to invoke the Black Duck scanner which creates the project (if not present) and scan. After the scanning is finished and Black Duck populates the Bill Of Materials (BOM) in Black Duck, the core pod retrieves the information and sends it to the pod processor to annotate the pods with policy violation and vulnerability count. To view these labels simply view the pods in the OpenShift UI and it should look something like "com.blackducksoftware.pod.overall-status=NOT_IN_VIOLATION".
 
 [More details here](https://synopsys.atlassian.net/wiki/spaces/BDLM/pages/34275718/OpsSight+Architecture)
 
@@ -48,19 +50,19 @@ The scanner is configured to scan anything deployed on the synopsys-demo workspa
 
 > :warning: **PLEASE DON'T SCAN HUGE PROJECTS, THIS BLACK DUCK INSTANCE IS UNDER AN NFR LICENSE AND HAS LIMITED CAPACITY**
 
-The objective is to deploy an application of your choice in the synopsys-demo namespace so that the Black Duck connector can scan it. In the steps below we'll be using the <https://quay.io/repository/opssighttestorg/ducky-crm> image.
+The objective is to deploy an application in the synopsys-demo project so that the Black Duck connector can scan it. In the steps below we'll be using the <https://quay.io/repository/opssighttestorg/ducky-crm> image.
 
 1. Go to Developer section (persepective) instead of Administrator view in synopsys-demo project and select the YAML option.
 
 ![OpenShift Dev view](images/openshift-dev.png)
 
-2. If familiar with YAML syntax then create your own or here’s an example and hit create.
+2. Note: Other users may be creating the same application in this project, so it is important to modify the YAML below to use your lab username where [userx] is found. After updating the YAML, paste it into the editor text area and click Create to create the Deployment.
 
 ``` Yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ducky-crm-deployment
+  name: [userx]-ducky-crm-deployment
   labels:
     app: ducky-crm
 spec:
@@ -85,16 +87,18 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "1000m"
----
+```
+3. Click Add again and choose the YAML option to create the Service.  Remember to modify the YAML below first with your username.
+``` Yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: ducky-crm
+  name: [userx]-ducky-crm
   labels:
     app: ducky-crm
 spec:
   selector:
-    app: ducky-crm
+    app: [userx]-ducky-crm
   ports:
     - protocol: TCP
       port: 8080
