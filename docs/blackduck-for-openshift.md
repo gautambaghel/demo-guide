@@ -1,6 +1,6 @@
-This workshop showcases scanning containers deployed on Red Hat OpenShift with Synopsys Black Duck Software Composition Analysis (SCA) in production workloads. Black Duck provides a solution for managing security, quality, and license compliance risk that comes from the use of open source and third-party code in applications and containers.
+This workshop showcases how to scan containers deployed on Red Hat OpenShift with Synopsys' Software Composition Analysis tool, Black Duck in production workloads. Black Duck provides a solution for managing security, license compliance and code quality risks that come from the use of open source and third-party code in applications and containers.
 
-This workshop provides a fully deployed and running Black Duck integration and will cover the following topics:
+This workshop demonstrates Black Duck fully deployed and running on OpenShift and will cover the following topics:
 
 1. Black Duck for OpenShift setup.
 2. Project & 'pod running' verification.
@@ -11,11 +11,11 @@ This workshop provides a fully deployed and running Black Duck integration and w
 
 # Black Duck for OpenShift setup
 
-A lab instructor is required to run this as a workshop. After the instructor deploys the RHPDS instance, it will create a Red Hat OpenShift cluster with two projects created, and Synopsys Black Duck for OpenShift deployed. The lab instructor will provide participants access to the cluster. To view what was created by the instructor follow these steps:
+A lab instructor is required to run this as a workshop. After the instructor deploys the RHPDS instance, it will create a Red Hat OpenShift cluster with two projects created, and Black Duck for OpenShift deployed. The lab instructor will provide participants access to the cluster. To view what was created by the instructor follow these steps:
 
-1. Click on Home (Left navigation panel) > Projects > synopsys-blackduck: To view the Black Duck connector project, to see the running pods navigate to the workloads section on the top.
+1. Click on Home (Left navigation panel) > Projects > synopsys-blackduck: to view the Black Duck connector project. To see the running pods navigate to the workloads section on the top.
 
-2. Similarly to view the demo project which we will be scanning repeat the above process by selecting synopsys-demo
+2. Similarly, to view the scanning demo project, repeat the above process by selecting synopsys-demo
 
 ![The two created namespaces](images/synopsys-namespaces.png)
 
@@ -25,7 +25,7 @@ The two created projects are as follows - synopsys-blackduck & synopsys-demo. Th
 
 1. opssight-core: brains of the operation, a pod which communicates with Black Duck instance hosted at <https://redhathub.blackducksoftware.com/>, it maintains a list of all the scanned images and communicates with the rest of the pods.
 
-2. opssight-pod-processor: a pod which connects with the pods and gets the underlying base image that's running inside the containers in OpenShift.
+2. opssight-pod-processor: a pod which connects with other pods and retrieves underlying base image that runs inside the containers in OpenShift.
 
 3. opssight-scanner: a pod which downloads the image from whichever image registry it's supposed to.
 
@@ -33,7 +33,7 @@ The two created projects are as follows - synopsys-blackduck & synopsys-demo. Th
 
 ![Running pods in synopsys-blackduck namespace](images/blackduck-connector-pods.png)
 
-This also includes a configmap for configuring a lot of options e.g. when to look for scans to run, only run scans for specific project etc. There are 2 also 2 opaque secrets created which helps the integration with if any images that maybe coming from a private registry and which Black Duck instance to connect to. All of these options are preconfigured so workshop users need not worry about them.
+This also includes a configmap for configuring a lot of options e.g. when to look for scans to run, only run scans for specific project etc. There are also two opaque secrets created which helps the integration with any images that may come from a private registry. All of these options are preconfigured so workshop users do not need to worry about them.
 
 # Demo Application details
 
@@ -50,9 +50,9 @@ The demo application is an insecure bank application under project the synopsys-
 
 # How the scanning works
 
-**Note: For purposes of this workshop, the Black Duck scanner is configured to scan anything deployed only in the synopsys-demo workspace**.
+**Note: For purposes of this workshop, the Black Duck scanner is only configured to scan anything deployed in the synopsys-demo workspace**.
 
-The scanning process takes place as following:
+The scanning process works as place as follows:
 
 1. The insecure-bank application is deployed in the cluster.
 
@@ -62,9 +62,9 @@ The scanning process takes place as following:
 
 4. The "connector-scanner" pod then initiates a Black Duck signature scan. There are two containers in the pod, the first (image-getter) container will download and temporarily store the image in memory. The second (scanner) container to invoke the Black Duck scanner.
 
-5. If the image has not been previously scanned then scanner will create the project with version. If the image is present with a different version then scanner will only create a new version under the project. If both image and the version is present in Black Duck then image is not sent for scanning and the results are re-used.
+5. If the image has not been previously scanned, then the scanner will create the project with version. If the image is present with a different version, then the scanner will only create a new version under the project. If both image and the version are present in Black Duck then image is not sent for scanning and the results are re-used.
 
-6. After the scanning is finished and Black Duck populates the Bill Of Materials (BOM) in Black Duck.
+6. After scanning is finished, Black Duck populates the Bill Of Materials (BOM) in Black Duck.
 
 7. The "connector-core" pod retrieves the information from Black Duck and sends it back to the "connector-pod-processor" pod while taking a note of the scan completion and results received.
 
@@ -106,11 +106,11 @@ To view the scanning results in Black Duck UI follow these instructions:
 
 The objective is to deploy an application in the synopsys-demo project so that the Black Duck connector can scan it. In the steps below we'll be using the <https://quay.io/repository/opssighttestorg/ducky-crm> image.
 
-1. Go to Developer section (persepective) instead of Administrator view in synopsys-demo project and select the YAML option.
+1. Go to Developer section (perspective) instead of Administrator view in synopsys-demo project and select the YAML option.
 
 ![OpenShift Dev view](images/openshift-dev.png)
 
-2. Note: Other users may be creating the same application in this project, so it is important to modify the YAML below to use your lab username where [userx] is found. After updating the YAML, paste it into the editor text area and click Create to create the Deployment.
+2. Note: Other users may be creating the same application in this project, so it is important to modify the YAML below to use your lab username where [userx] is found. After updating the YAML, paste it into the editor text area and click "Create" to create the Deployment.
 
 ``` Yaml
 apiVersion: apps/v1
@@ -143,7 +143,7 @@ spec:
             cpu: "1000m"
 ```
 
-3. Click Add again and choose the YAML option to create the Service.  Remember to modify the YAML below first with your username.
+3. Click "Add again" and choose the YAML option to create the Service.  Remember to modify the YAML below first with your username.
 
 ``` Yaml
 apiVersion: v1
@@ -165,4 +165,4 @@ spec:
 
 ![OpenShift Dev view](images/openshift-yaml.png)
 
-5. You might not be able to see the scan due to workshop blackduck restrictions, if you want to see the scan results in Black Duck please contact your lab instructor and they can give you access in BD for your specific project.
+5. You might not be able to see the scan due to workshop blackduck restrictions, if you want to see the scan results in Black Duck please contact your lab instructor and they can give you access to Black Duck for your specific project.
