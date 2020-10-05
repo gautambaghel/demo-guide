@@ -12,7 +12,14 @@ This workshop demonstrates Black Duck fully deployed and running on OpenShift an
 ### Video
 This is a playlist of short videos covering how to scan and manage Open Source Software using Black Duck. To understand the Black Duck for OpenShift integration, please follow the Workshop section below.
 
-<iframe width="560" height="315" src="https://www.youtube.com/playlist?list=PLpcJicBh0NdY_YnQj5HLs22oyEqnjjGrW" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="video">
+    <iframe
+        src="https://www.youtube.com/playlist?list=PLpcJicBh0NdY_YnQj5HLs22oyEqnjjGrW"
+        frameborder="0"
+        allowfullscreen
+    >
+    </iframe>
+</div>
 
 ### Demo
 The Black Duck for OpenShift RHPDS catalog item can be used for demo purposes as well.  Please follow the link to the workshop below and view the videos above to get an understanding of what to demo.
