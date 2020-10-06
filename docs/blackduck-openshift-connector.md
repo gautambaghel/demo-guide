@@ -22,7 +22,7 @@ The Black Duck for OpenShift RHPDS catalog item can be used for demo purposes as
 
 ### Workshop
 This workshop may be provisioned using the Red Hat Product Demo System (RHPDS). Within RHPDS, the catalog item is in the _Workshops_ category and is called _Synopsys Black Duck for OpenShift_. All students will be using a shared cluster deployed specifically for this workshop. In RHPDS, before ordering, the catalog item description links to instructions for how to set up your environment and other details about performing the workshop.
-* [Synopsys Black Duck for OpenShift Workshop](https://github.com/gautambaghel/demo-guide/blob/blackduck-to-dev/docs/blackduck-for-openshift.md)
+* [Synopsys Black Duck for OpenShift Workshop](https://github.com/blackducksoftware/blackduck-for-openshift-workshop/blob/main/README.md)
 
 ### Additional Resources
 * [Webinar: Secure your "Dev" and "Ops" Pipeline with Synopsys and Red Hat](https://www.brighttalk.com/webcast/13983/404981/secure-your-dev-and-ops-pipeline-with-synopsys-and-red-hat)
